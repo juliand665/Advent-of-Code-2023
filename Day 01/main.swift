@@ -1,6 +1,5 @@
 import Foundation
 import AoC_Helpers
-import SimpleParser
 
 let lines = input().lines()
 let part1Value = lines
