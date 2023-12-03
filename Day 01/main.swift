@@ -34,4 +34,4 @@ let part2Value = lines
 	.map(digits(of:))
 	.map { $0.first! * 10 + $0.last! }
 	.sum()
-print(part2Value) // 53846 too low
+print(part2Value)
