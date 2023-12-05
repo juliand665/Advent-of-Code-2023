@@ -35,9 +35,13 @@ struct Mapping {
 	
 	init(explicitRanges: [MappingRange]) {
 		self.ranges = []
+		ranges.reserveCapacity(explicitRanges.count)
 		var start = Int.min
 		for explicitRange in explicitRanges.sorted(on: \.src.lowerBound) {
-			ranges.append(.init(identityRange: start ..< explicitRange.src.lowerBound))
+			let next = explicitRange.src.lowerBound
+			if start < next {
+				ranges.append(.init(identityRange: start..<next))
+			}
 			ranges.append(explicitRange)
 			start = explicitRange.src.upperBound
 		}
@@ -45,11 +49,14 @@ struct Mapping {
 	}
 	
 	func destination(for source: Int) -> Int {
-		ranges.lazy.compactMap { $0.destination(for: source) }.onlyElement()!
+		//ranges.lazy.compactMap { $0.destination(for: source) }.onlyElement()!
+		// binary search because why not
+		let rangeIndex = ranges.partitioningIndex { source < $0.src.upperBound }
+		return source + ranges[rangeIndex].offset
 	}
 	
-	func destinations(for sources: Range) -> [Range] {
-		ranges.compactMap { $0.destinations(for: sources) }
+	func destinations(for sources: Range) -> some Collection<Range> {
+		ranges.lazy.compactMap { $0.destinations(for: sources) }
 	}
 }
 
