@@ -27,27 +27,12 @@ let partNumbers = numbers
 	.map(\.number)
 print(partNumbers.sum())
 
-do {
-	let gearCandidates: [Vector2: [Int]] = numbers.reduce(into: [:]) { gearCandidates, number in
-		let neighbors = Set(number.positions.flatMap(\.neighborsWithDiagonals))
-		for position in neighbors {
-			guard schematic.element(at: position) == "*" else { continue }
-			gearCandidates[position, default: []].append(number.number)
-		}
-	}
-	
-	_ = gearCandidates
-}
-
-var gearCandidates: [Vector2: [Int]] = [:]
-for (positions, number) in numbers {
-	let neighbors = Set(positions.flatMap(\.neighborsWithDiagonals))
+let gearCandidates: [Vector2: [Int]] = numbers.reduce(into: [:]) { gearCandidates, number in
+	let neighbors = Set(number.positions.flatMap(\.neighborsWithDiagonals))
 	for position in neighbors {
 		guard schematic.element(at: position) == "*" else { continue }
-		gearCandidates[position, default: []].append(number)
+		gearCandidates[position, default: []].append(number.number)
 	}
 }
-
-
-let gearRatios = gearCandidates.values.filter { $0.count == 2 }.map { $0[0] * $0[1] }
+let gearRatios = gearCandidates.values.filter { $0.count == 2 }.map { $0.splat(*) }
 print(gearRatios.sum())
