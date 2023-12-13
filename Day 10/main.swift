@@ -34,26 +34,48 @@ let boundary: [Vector2: Direction] = [:] <- { boundary in
 	print(boundary.count / 2) // part 1: max distance is half the number of tiles in the loop
 }
 
-let sides = rawTiles.map { _ in nil as Bool? } <- { sides in
-	func fill(from start: Vector2, as side: Bool) {
-		guard sides.isInMatrix(start) else { return }
-		if let currentSide = sides[start] {
-			assert(currentSide == side)
+// flood fill approach (my initial one)
+/*
+	let sides = rawTiles.map { _ in nil as Bool? } <- { sides in
+		func fill(from start: Vector2, as side: Bool) {
+			guard sides.isInMatrix(start) else { return }
+			if let currentSide = sides[start] {
+				assert(currentSide == side)
+			}
+			
+			guard sides[start] == nil else { return }
+			guard !boundary.keys.contains(start) else { return }
+			sides[start] = side
+			for neighbor in start.neighbors {
+				fill(from: neighbor, as: side)
+			}
 		}
-		
-		guard sides[start] == nil else { return }
-		guard !boundary.keys.contains(start) else { return }
-		sides[start] = side
-		for neighbor in start.neighbors {
-			fill(from: neighbor, as: side)
+		for (position, direction) in boundary {
+			fill(from: position + direction.clockwise, as: true)
+			fill(from: position + direction.counterclockwise, as: false)
+			let oppositeSide = connections(from: position).contains(direction.counterclockwise)
+			fill(from: position + direction.opposite, as: oppositeSide)
 		}
 	}
-	for (position, direction) in boundary {
-		fill(from: position + direction.clockwise, as: true)
-		fill(from: position + direction.counterclockwise, as: false)
-		let oppositeSide = connections(from: position).contains(direction.counterclockwise)
-		fill(from: position + direction.opposite, as: oppositeSide)
+	let interior = !sides[.zero]! // this would break if the loop went through this corner, in which case we'd need to find other methods, but it works for my input lol
+	print(sides.count(of: interior))
+*/
+
+// scan approach (simpler and faster!)
+var interiorCount = 0
+for y in 0..<rawTiles.height {
+	var isInside = false
+	for x in 0..<rawTiles.width {
+		let pos = Vector2(x, y)
+		if boundary.keys.contains(pos) {
+			if connections(from: pos).contains(.up) {
+				isInside.toggle()
+			}
+		} else {
+			if isInside {
+				interiorCount += 1
+			}
+		}
 	}
 }
-let interior = !sides[.zero]! // this would break if the loop went through this corner, in which case we'd need to find other methods, but it works for my input lol
-print(sides.count(of: interior))
+print(interiorCount)
