@@ -10,12 +10,8 @@ extension Grid {
 	init(_ rows: some Collection<Substring>) {
 		let terrain = Matrix(rows.lazy.map { $0.map { $0 == "#" } })
 		
-		self.rows = terrain.rows.map {
-			$0.reduce(0) { $0 << 1 | ($1 ? 1 : 0) }
-		}
-		self.columns = terrain.columns().map {
-			$0.reduce(0) { $0 << 1 | ($1 ? 1 : 0) }
-		}
+		self.rows = terrain.rows.map { $0.asBits() }
+		self.columns = terrain.columns.map { $0.asBits() }
 	}
 }
 

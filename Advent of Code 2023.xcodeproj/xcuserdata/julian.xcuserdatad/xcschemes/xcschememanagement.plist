@@ -69,9 +69,19 @@
 			<key>orderHint</key>
 			<integer>13</integer>
 		</dict>
+		<key>Day 14.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>B9007C0F2B2B38EA00A0E3E7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>B9D17F472B1A1DF400BBC1FF</key>
 		<dict>
 			<key>primary</key>
@@ -128,6 +138,11 @@
 			<true/>
 		</dict>
 		<key>B9D17FFA2B28A96800BBC1FF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B9D1800A2B2965AB00BBC1FF</key>
 		<dict>
 			<key>primary</key>
 			<true/>

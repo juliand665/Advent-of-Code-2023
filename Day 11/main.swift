@@ -12,7 +12,7 @@ let emptyRows: Array = space.rows
 	.lazy
 	.map { $0.contains("#") ? 0 : 1 }
 	.reductions(0, +)
-let emptyCols: Array = space.columns()
+let emptyCols: Array = space.columns
 	.lazy
 	.map { $0.contains("#") ? 0 : 1 }
 	.reductions(0, +)
