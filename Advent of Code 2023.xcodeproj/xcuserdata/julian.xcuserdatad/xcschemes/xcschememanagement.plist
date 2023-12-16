@@ -79,6 +79,11 @@
 			<key>orderHint</key>
 			<integer>15</integer>
 		</dict>
+		<key>Day 16.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>16</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -88,6 +93,11 @@
 			<true/>
 		</dict>
 		<key>B9007C202B2C7FF800A0E3E7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B9007C332B2DFE7700A0E3E7</key>
 		<dict>
 			<key>primary</key>
 			<true/>
