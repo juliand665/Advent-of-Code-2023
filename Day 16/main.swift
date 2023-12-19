@@ -32,16 +32,6 @@ enum Part: Character {
 	}
 }
 
-extension DirectionSet {
-	static let horizontal: Self = [.left, .right]
-	static let vertical: Self = [.up, .down]
-	static let none: Self = .init(rawValue: 0)
-	
-	func contains(_ direction: Direction) -> Bool {
-		contains(.init(direction))
-	}
-}
-
 let tiles = Matrix(input().lines().nestedMap(Part.init))
 
 func tilesEnergized(entering start: Vector2, towards direction: Direction) -> Int {
@@ -64,22 +54,18 @@ func tilesEnergized(entering start: Vector2, towards direction: Direction) -> In
 
 print(tilesEnergized(entering: .zero, towards: .right))
 
-let counts = chain(
-	chain(
-		(0..<tiles.width).lazy.map { x in
-			tilesEnergized(entering: .init(x, 0), towards: .down)
-		},
-		(0..<tiles.width).lazy.map { x in
-			tilesEnergized(entering: .init(x, tiles.height - 1), towards: .up)
-		}
-	),
-	chain(
-		(0..<tiles.height).lazy.map { y in
-			tilesEnergized(entering: .init(0, y), towards: .right)
-		},
-		(0..<tiles.height).lazy.map { y in
-			tilesEnergized(entering: .init(tiles.width - 1, y), towards: .left)
-		}
-	)
-)
-print(counts.max()!)
+let counts = [
+	(0..<tiles.width).lazy.map { x in
+		tilesEnergized(entering: .init(x, 0), towards: .down)
+	},
+	(0..<tiles.width).lazy.map { x in
+		tilesEnergized(entering: .init(x, tiles.height - 1), towards: .up)
+	},
+	(0..<tiles.height).lazy.map { y in
+		tilesEnergized(entering: .init(0, y), towards: .right)
+	},
+	(0..<tiles.height).lazy.map { y in
+		tilesEnergized(entering: .init(tiles.width - 1, y), towards: .left)
+	},
+]
+print(counts.joined().max()!)
