@@ -55,4 +55,4 @@ let pathLengths: Array = measureTime {
 }
 print("path lengths:", pathLengths.sum() / pathLengths.count)
 
-print(pathLengths.reduce(1, lcm))
+print(pathLengths.lowestCommonMultiple())

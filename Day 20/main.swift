@@ -140,4 +140,4 @@ for module in modules.indices.sorted(on: { deps[$0].count }) {
 }
 
 // this is just the right answer instantly because we're looking for when rx gets a low pulse, meaning it's gone through an entire period
-print(Set(periodSizes.values).reduce(1, lcm))
+print(Set(periodSizes.values).lowestCommonMultiple())
