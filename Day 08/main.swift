@@ -8,11 +8,11 @@ enum Side: Character {
 }
 
 struct Node {
-	var id: String
-	var left: String
-	var right: String
+	var id: Int
+	var left: Int
+	var right: Int
 	
-	subscript(side: Side) -> String {
+	subscript(side: Side) -> Int {
 		switch side {
 		case .left: left
 		case .right: right
@@ -24,57 +24,35 @@ extension Node {
 	init(_ description: Substring) {
 		let (_, id, l, r) = try! /(\w+) = \((\w+), (\w+)\)/
 			.wholeMatch(in: description)!.output
-		self.init(id: String(id), left: String(l), right: String(r))
+		self = [id, l, r].map { getID($0) }.splat(Self.init)
 	}
 }
 
 let (rawInstructions, rawNetwork) = input().lineGroups().extract()
 let instructions = rawInstructions.onlyElement()!.map { Side(rawValue: $0)! }
-let nodes = rawNetwork.lazy.map(Node.init)
-let network = Dictionary(values: nodes, keyedBy: \.id)
+let nodes = rawNetwork.lazy.map(Node.init).sorted(on: \.id)
 
 func instruction(forStep step: Int) -> Side {
 	instructions[step % instructions.count]
 }
 
-func pathfind(from start: String, offset: Int = 0) -> (end: String, steps: Int) {
+let isEndNode = rawIDs.map { $0.ends(with: "Z") }
+
+func pathfind(from start: Int, offset: Int = 0) -> (end: Int, steps: Int) {
 	sequence(first: (start, offset)) { node, step in
-		(network[node]![instruction(forStep: step)], step + 1)
+		(nodes[node][instruction(forStep: step)], step + 1)
 	}
 	.dropFirst()
-	.first { $0.0.ends(with: "Z") }!
+	.first { isEndNode[$0.0] }!
 }
 
-print("from AAA:", pathfind(from: "AAA"))
+print("from AAA:", pathfind(from: getID("AAA")))
 
-func primeFactors(of number: Int) -> [Int: Int] {
-	[:] <- { factors in
-		var rest = number
-		var factor = 2
-		while rest > 1 {
-			let (quotient, remainder) = rest.quotientAndRemainder(dividingBy: factor)
-			guard remainder == 0 else {
-				factor += factor == 2 ? 1 : 2
-				assert(factor <= rest)
-				continue
-			}
-			rest = quotient
-			factors[factor, default: 0] += 1
-		}
-	}
-}
-
-let startNodes = nodes.lazy.map(\.id).filter { $0.hasSuffix("A") }
+let startNodes = nodes.lazy.map(\.id).filter { rawIDs[$0].hasSuffix("A") }
 // incredibly, the network seems to be constructed such that the initial path from start to end is exactly the same length as the later paths from the end
-let pathLengths: Array = startNodes.map { pathfind(from: $0).steps }
-//print("path lengths:", pathLengths)
+let pathLengths: Array = measureTime {
+	startNodes.map { pathfind(from: $0).steps }
+}
+print("path lengths:", pathLengths.sum() / pathLengths.count)
 
-let totalFactors = pathLengths
-	.lazy
-	.map { primeFactors(of: $0) }
-	.reduce { $0.merging($1, uniquingKeysWith: max) }!
-let total = totalFactors
-	.lazy
-	.flatMap { repeatElement($0, count: $1) }
-	.product()
-print(total)
+print(pathLengths.reduce(1, lcm))
