@@ -47,6 +47,8 @@ while true {
 	func performCut(nodes: DisjointSets) -> (count: Int, sizeProduct: Int) {
 		var nodes = nodes
 		
+		// karger's algorithm gets worse as there's less edges left because we're more likely to hit one that would be in the min cut
+		// instead of running until we're down to 2 nodes, we'll run until we've reduced the input to its square root, then repeatedly run it from there. this about doubles our speed in my experience, and there's probably still much better choices for these parameters
 		let target = max(2, Int(sqrt(Double(nodes.count))))
 		while nodes.count > target {
 			let (a, b) = edges.randomElement()!
@@ -58,7 +60,7 @@ while true {
 			let sizes = nodes.sizes.filter { $0 > 0 }.product()
 			return (count, sizes)
 		} else {
-			return (0..<1).lazy.map { _ in
+			return (0..<3).lazy.map { _ in
 				performCut(nodes: nodes)
 			}.min { $0.count < $1.count }!
 		}
